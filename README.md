@@ -36,7 +36,7 @@ $reader = new IniReader();
 $array = $reader->readString($string);
 
 // Read a file
-$array = $reader->readString('config.ini');
+$array = $reader->readFile('config.ini');
 ```
 
 ### Write
