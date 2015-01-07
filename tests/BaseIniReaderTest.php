@@ -10,7 +10,7 @@ namespace Piwik\Tests\Ini;
 
 use Piwik\Ini\IniReader;
 
-class IniReaderTest extends \PHPUnit_Framework_TestCase
+abstract class BaseIniReaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var IniReader
@@ -107,15 +107,6 @@ INI;
     public function test_readString_withEmptyString()
     {
         $this->assertSame(array(), $this->reader->readString(''));
-    }
-
-    /**
-     * @expectedException \Piwik\Ini\IniReadingException
-     * @expectedExceptionMessage Syntax error in INI configuration
-     */
-    public function test_readString_shouldThrowException_ifInvalidIni()
-    {
-        $this->reader->readString('[ test = foo');
     }
 
     public function test_readString_shouldIgnoreComments()
