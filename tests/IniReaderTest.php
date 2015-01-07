@@ -50,6 +50,7 @@ array[] = false
 
 [Section 2]
 foo = "bar"
+
 INI;
         $expected = array(
             'Section 1' => array(
