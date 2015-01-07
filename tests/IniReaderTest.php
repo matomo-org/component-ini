@@ -83,6 +83,27 @@ INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
 
+    /**
+     * parse_ini_string() on PHP 5.3.3 fails with strings missing an empty line at the end (at least on Travis).
+     *
+     * Tests that IniReader handles them.
+     *
+     * @see http://3v4l.org/jD1Lh
+     */
+    public function test_readString_withoutEmptyEndLine()
+    {
+        $ini = <<<INI
+[Section 1]
+foo = "bar"
+INI;
+        $expected = array(
+            'Section 1' => array(
+                'foo' => 'bar',
+            ),
+        );
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
     public function test_readString_withEmptyString()
     {
         $this->assertSame(array(), $this->reader->readString(''));
@@ -108,6 +129,7 @@ INI;
 ; <?php exit; ?> DO NOT REMOVE THIS LINE
 [Section 1]
 foo = "bar"
+
 INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }

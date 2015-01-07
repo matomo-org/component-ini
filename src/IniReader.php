@@ -82,6 +82,10 @@ class IniReader
      */
     public function readString($ini)
     {
+        // On PHP 5.3.3 an empty line return is needed at the end
+        // See http://3v4l.org/jD1Lh
+        $ini .= "\n";
+
         if ($this->useNativeFunction) {
             $array = @parse_ini_string($ini, true, INI_SCANNER_RAW);
 
