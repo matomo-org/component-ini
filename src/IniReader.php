@@ -89,7 +89,7 @@ class IniReader
         if ($this->useNativeFunction) {
             $array = $this->readWithNativeFunction($ini);
         } else {
-            $array = $this->readIni($ini, true);
+            $array = $this->readWithAlternativeImplementation($ini, true);
         }
 
         $array = $this->decode($array);
@@ -97,6 +97,11 @@ class IniReader
         return $array;
     }
 
+    /**
+     * @param string $ini
+     * @throws IniReadingException
+     * @return array
+     */
     private function readWithNativeFunction($ini)
     {
         $array = @parse_ini_string($ini, true, INI_SCANNER_RAW);
@@ -118,7 +123,7 @@ class IniReader
      * @param string $ini
      * @return array
      */
-    private function readIni($ini)
+    private function readWithAlternativeImplementation($ini)
     {
         if (is_string($ini)) {
             $ini = explode("\n", str_replace("\r", "\n", $ini));
