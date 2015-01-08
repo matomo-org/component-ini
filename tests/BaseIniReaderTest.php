@@ -29,24 +29,14 @@ abstract class BaseIniReaderTest extends \PHPUnit_Framework_TestCase
         $ini = <<<INI
 [Section 1]
 foo = "bar"
-bool_true_1 = 1
-bool_false_1 = 0
-bool_true_2 = true
-bool_false_2 = false
-bool_true_3 = yes
-bool_false_3 = no
-bool_true_4 = on
-bool_false_4 = off
-empty =
-explicit_null = null
+number_1 = 1
+number_0 = 0
 int = 10
 float = 10.3
 array[] = "string"
 array[] = 10.3
 array[] = 1
 array[] = 0
-array[] = true
-array[] = false
 
 [Section 2]
 foo = "bar"
@@ -55,16 +45,8 @@ INI;
         $expected = array(
             'Section 1' => array(
                 'foo' => 'bar',
-                'bool_true_1' => 1,
-                'bool_false_1' => 0,
-                'bool_true_2' => true,
-                'bool_false_2' => false,
-                'bool_true_3' => true,
-                'bool_false_3' => false,
-                'bool_true_4' => true,
-                'bool_false_4' => false,
-                'empty' => null,
-                'explicit_null' => null,
+                'number_1' => 1,
+                'number_0' => 0,
                 'int' => 10,
                 'float' => 10.3,
                 'array' => array(
@@ -72,12 +54,58 @@ INI;
                     10.3,
                     1,
                     0,
-                    true,
-                    false,
                 ),
             ),
             'Section 2' => array(
                 'foo' => 'bar',
+            ),
+        );
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
+    public function test_readString_shouldReadBooleans()
+    {
+        $ini = <<<INI
+bool_true_1 = on
+bool_false_1 = off
+bool_true_2 = true
+bool_false_2 = false
+bool_true_3 = yes
+bool_false_3 = no
+array[] = true
+array[] = false
+
+INI;
+        $expected = array(
+                'bool_true_1' => true,
+                'bool_false_1' => false,
+                'bool_true_2' => true,
+                'bool_false_2' => false,
+                'bool_true_3' => true,
+                'bool_false_3' => false,
+                'array' => array(
+                    true,
+                    false,
+                ),
+        );
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
+    public function test_readString_shouldReadNulls()
+    {
+        $ini = <<<INI
+foo =
+bar = null
+array[] =
+array[] = null
+
+INI;
+        $expected = array(
+            'foo' => null,
+            'bar' => null,
+            'array' => array(
+                null,
+                null,
             ),
         );
         $this->assertSame($expected, $this->reader->readString($ini));
@@ -137,6 +165,12 @@ INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
 
+    /**
+     * Test a case that fails with basic parse_ini_string($ini, true, INI_SCANNER_RAW)
+     * under PHP <= 5.3.14 or <= 5.4.4
+     *
+     * @see http://3v4l.org/m24cT
+     */
     public function test_readString_shouldReadSpecialCharacters()
     {
         $expected = array(

@@ -92,7 +92,7 @@ class IniReader
             $array = $this->readWithAlternativeImplementation($ini, true);
         }
 
-        $array = $this->decode($array);
+        $array = $this->decode($array, $array);
 
         return $array;
     }
@@ -104,12 +104,17 @@ class IniReader
      */
     private function readWithNativeFunction($ini)
     {
-        $array = @parse_ini_string($ini, true, INI_SCANNER_RAW);
+        $array = @parse_ini_string($ini, true);
 
         if ($array === false) {
             $e = error_get_last();
             throw new IniReadingException('Syntax error in INI configuration: ' . $e['message']);
         }
+
+        // We cannot use INI_SCANNER_RAW by default because it is buggy under PHP 5.3.14 and 5.4.4
+        // http://3v4l.org/m24cT
+        $rawValues = @parse_ini_string($ini, true, INI_SCANNER_RAW);
+        $array = $this->decode($array, $rawValues);
 
         return $array;
     }
@@ -237,22 +242,23 @@ class IniReader
      * We have to decode values manually because parse_ini_file() has a poor implementation.
      *
      * @param mixed $value
+     * @param mixed $rawValue
      * @return mixed
      */
-    private function decode($value)
+    private function decode($value, $rawValue)
     {
         if (is_array($value)) {
-            foreach ($value as &$subValue) {
-                $subValue = $this->decode($subValue);
+            foreach ($value as $i => &$subValue) {
+                $subValue = $this->decode($subValue, $rawValue[$i]);
             }
             return $value;
         }
 
-        if (is_numeric($value)) {
-            return $value + 0;
+        if (! is_string($value)) {
+            return $value;
         }
 
-        switch (strtolower($value)) {
+        switch (strtolower($rawValue)) {
             case '':
             case 'null' :
                 return null;
@@ -263,7 +269,11 @@ class IniReader
             case 'false':
             case 'no':
             case 'off':
-                return false;
+            return false;
+        }
+
+        if (is_numeric($value)) {
+            return $value + 0;
         }
 
         return $value;

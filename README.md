@@ -26,6 +26,8 @@ This component provides the following benefits over the built-in function:
   - parses boolean values (`true`/`false`, `on`/`off`, `yes`/`no`) to real PHP booleans ([instead of strings `"1"` and `""`](http://3v4l.org/JuvOT))
   - parses null to PHP `null` ([instead of an empty string](http://3v4l.org/KSoj2))
 - works even if `parse_ini_file()` or `parse_ini_string()` is disabled in `php.ini` by falling back on an alternate implementation (can happen on some shared hosts)
+- fixes [a PHP 5.3.3 bug](http://3v4l.org/jD1Lh)
+- fixes [a parsing bug](http://3v4l.org/m24cT) present in PHP <= 5.4.4
 
 ## Usage
 
