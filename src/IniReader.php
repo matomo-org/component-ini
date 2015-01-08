@@ -184,7 +184,19 @@ class IniReader
             }
 
             $value = trim($value);
-            $value = trim($value, "'\"");
+
+            // Special keywords
+            if ($value === 'true' || $value === 'yes' || $value === 'on') {
+                $value = true;
+            } elseif ($value === 'false' || $value === 'no' || $value === 'off') {
+                $value = false;
+            } elseif ($value === '' || $value === 'null') {
+                $value = null;
+            }
+
+            if (is_string($value)) {
+                $value = trim($value, "'\"");
+            }
 
             if ($i == 0) {
                 if (substr($key, -2) == '[]') {
@@ -259,24 +271,32 @@ class IniReader
             return $value;
         }
 
-        switch (strtolower($rawValue)) {
-            case '':
-            case 'null' :
-                return null;
-            case 'true' :
-            case 'yes' :
-            case 'on' :
-                return true;
-            case 'false':
-            case 'no':
-            case 'off':
-            return false;
-        }
+        $value = $this->decodeBoolean($value, $rawValue);
+        $value = $this->decodeNull($value, $rawValue);
 
         if (is_numeric($value)) {
             return $value + 0;
         }
 
+        return $value;
+    }
+
+    private function decodeBoolean($value, $rawValue)
+    {
+        if ($value === '1' && ($rawValue === 'true' || $rawValue === 'yes' || $rawValue === 'on')) {
+            return true;
+        }
+        if ($value === '' && ($rawValue === 'false' || $rawValue === 'no' || $rawValue === 'off')) {
+            return false;
+        }
+        return $value;
+    }
+
+    private function decodeNull($value, $rawValue)
+    {
+        if ($value === '' && $rawValue === 'null') {
+            return null;
+        }
         return $value;
     }
 }

@@ -33,6 +33,7 @@ number_1 = 1
 number_0 = 0
 int = 10
 float = 10.3
+empty = ""
 array[] = "string"
 array[] = 10.3
 array[] = 1
@@ -49,6 +50,7 @@ INI;
                 'number_0' => 0,
                 'int' => 10,
                 'float' => 10.3,
+                'empty' => '',
                 'array' => array(
                     'string',
                     10.3,
@@ -94,18 +96,46 @@ INI;
     public function test_readString_shouldReadNulls()
     {
         $ini = <<<INI
-foo =
 bar = null
-array[] =
 array[] = null
 
 INI;
         $expected = array(
-            'foo' => null,
             'bar' => null,
             'array' => array(
                 null,
-                null,
+            ),
+        );
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
+    public function test_readString_shouldNotDecodeQuotedStrings()
+    {
+        $ini = <<<INI
+test1 = ""
+test2 = "null"
+test3 = "on"
+test4 = "off"
+test5 = "true"
+test6 = "false"
+test7 = "yes"
+test8 = "no"
+array[] = "true"
+array[] = "false"
+
+INI;
+        $expected = array(
+            'test1' => '',
+            'test2' => 'null',
+            'test3' => 'on',
+            'test4' => 'off',
+            'test5' => 'true',
+            'test6' => 'false',
+            'test7' => 'yes',
+            'test8' => 'no',
+            'array' => array(
+                'true',
+                'false',
             ),
         );
         $this->assertSame($expected, $this->reader->readString($ini));
