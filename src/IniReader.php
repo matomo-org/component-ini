@@ -116,10 +116,9 @@ class IniReader
      * @author anthon (dot) pang (at) gmail (dot) com
      *
      * @param string $ini
-     * @param bool $processSections
      * @return array
      */
-    private function readIni($ini, $processSections)
+    private function readIni($ini)
     {
         if (is_string($ini)) {
             $ini = explode("\n", str_replace("\r", "\n", $ini));
@@ -194,15 +193,9 @@ class IniReader
 
         for ($j = 0; $j < $i; $j++) {
             if (isset($values[$j])) {
-                if ($processSections === true) {
-                    $result[$sections[$j]] = $values[$j];
-                } else {
-                    $result[] = $values[$j];
-                }
+                $result[$sections[$j]] = $values[$j];
             } else {
-                if ($processSections === true) {
-                    $result[$sections[$j]] = array();
-                }
+                $result[$sections[$j]] = array();
             }
         }
 
