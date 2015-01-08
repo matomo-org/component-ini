@@ -241,8 +241,9 @@ class IniReader
     /**
      * We have to decode values manually because parse_ini_file() has a poor implementation.
      *
-     * @param mixed $value
-     * @param mixed $rawValue
+     * @param mixed $value    The array decoded by `parse_ini_file`
+     * @param mixed $rawValue The same array but with raw strings, so that we can re-decode manually
+     *                        and override the poor job of `parse_ini_file`
      * @return mixed
      */
     private function decode($value, $rawValue)
