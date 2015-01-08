@@ -87,17 +87,24 @@ class IniReader
         $ini .= "\n";
 
         if ($this->useNativeFunction) {
-            $array = @parse_ini_string($ini, true, INI_SCANNER_RAW);
-
-            if ($array === false) {
-                $e = error_get_last();
-                throw new IniReadingException('Syntax error in INI configuration: ' . $e['message']);
-            }
+            $array = $this->readWithNativeFunction($ini);
         } else {
             $array = $this->readIni($ini, true);
         }
 
         $array = $this->decode($array);
+
+        return $array;
+    }
+
+    private function readWithNativeFunction($ini)
+    {
+        $array = @parse_ini_string($ini, true, INI_SCANNER_RAW);
+
+        if ($array === false) {
+            $e = error_get_last();
+            throw new IniReadingException('Syntax error in INI configuration: ' . $e['message']);
+        }
 
         return $array;
     }
