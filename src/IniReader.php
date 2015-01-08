@@ -97,7 +97,7 @@ class IniReader
             $array = $this->readIni($ini, true);
         }
 
-        $array = $this->decodeValues($array);
+        $array = $this->decode($array);
 
         return $array;
     }
@@ -228,27 +228,17 @@ class IniReader
         return false;
     }
 
-    private function decodeValues($config)
-    {
-        foreach ($config as &$section) {
-            foreach ($section as $option => $value) {
-                $section[$option] = $this->decodeValue($value);
-            }
-        }
-        return $config;
-    }
-
     /**
      * We have to decode values manually because parse_ini_file() has a poor implementation.
      *
      * @param mixed $value
      * @return mixed
      */
-    private function decodeValue($value)
+    private function decode($value)
     {
         if (is_array($value)) {
             foreach ($value as &$subValue) {
-                $subValue = $this->decodeValue($subValue);
+                $subValue = $this->decode($subValue);
             }
             return $value;
         }

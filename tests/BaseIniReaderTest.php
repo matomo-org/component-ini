@@ -124,4 +124,28 @@ foo = "bar"
 INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
+
+    public function test_readString_shouldReadIniWithoutSections()
+    {
+        $expected = array(
+            'foo' => 'bar',
+        );
+        $ini = <<<INI
+foo = "bar"
+
+INI;
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
+    public function test_readString_shouldReadSpecialCharacters()
+    {
+        $expected = array(
+            'foo' => "&amp;6^ geagea'''&quot;;;&amp;",
+        );
+        $ini = <<<INI
+foo = "&amp;6^ geagea'''&quot;;;&amp;"
+
+INI;
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
 }
