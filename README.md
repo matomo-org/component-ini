@@ -5,6 +5,7 @@ Read and write INI configurations.
 [![Build Status](https://img.shields.io/travis/piwik/component-ini.svg?style=flat-square)](https://travis-ci.org/piwik/component-ini)
 [![Coverage Status](https://img.shields.io/coveralls/piwik/component-ini/master.svg?style=flat-square)](https://coveralls.io/r/piwik/component-ini?branch=master)
 [![Latest Version](https://img.shields.io/github/release/piwik/component-ini.svg?style=flat-square)](https://packagist.org/packages/piwik/component-ini)
+![](https://img.shields.io/packagist/dm/piwik/ini.svg?style=flat-square)
 
 ## Installation
 
