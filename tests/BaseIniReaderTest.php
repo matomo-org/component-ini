@@ -212,4 +212,30 @@ foo = "&amp;6^ geagea'''&quot;;;&amp;"
 INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
+
+    public function test_readString_shouldPreserveStringsLookingLikeNumbers()
+    {
+        $ini = <<<INI
+int = 10
+float = 10.3
+too_many_dots = 10.3.3
+contains_e = 52e666
+look_like_hexa = 0xf4c3b00c
+look_like_binary = 0b10100111001
+with_plus = +10
+with_minus = -10
+
+INI;
+        $expected = array(
+            'int' => 10,
+            'float' => 10.3,
+            'too_many_dots' => '10.3.3',
+            'contains_e' => '52e666',
+            'look_like_hexa' => '0xf4c3b00c',
+            'look_like_binary' => '0b10100111001',
+            'with_plus' => 10,
+            'with_minus' => -10,
+        );
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
 }
