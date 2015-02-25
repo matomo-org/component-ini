@@ -274,7 +274,7 @@ class IniReader
         $value = $this->decodeBoolean($value, $rawValue);
         $value = $this->decodeNull($value, $rawValue);
 
-        if (is_numeric($value)) {
+        if (is_numeric($value) && preg_match('/^[\.\+\-0-9]+$/', $value)) {
             return $value + 0;
         }
 
