@@ -47,16 +47,20 @@ class IniReader
     public function readFile($filename)
     {
         if (!file_exists($filename) || !is_readable($filename)) {
-            throw new IniReadingException(sprintf("The file %s doesn't exist or is not readable", $filename));
+            throw new IniReadingException($filename, sprintf("The file %s doesn't exist or is not readable", $filename));
         }
 
         $ini = $this->getFileContent($filename);
 
         if ($ini === false) {
-            throw new IniReadingException(sprintf('Impossible to read the file %s', $filename));
+            throw new IniReadingException($filename, sprintf('Impossible to read the file %s', $filename));
         }
 
-        return $this->readString($ini);
+        try {
+            return $this->readString($ini);
+        } catch (IniReadingException $ex) {
+            throw new IniReadingException($filename, $ex->getMessage(), $ex->getCode(), $ex);
+        }
     }
 
     /**
@@ -108,7 +112,7 @@ class IniReader
 
         if ($array === false) {
             $e = error_get_last();
-            throw new IniReadingException('Syntax error in INI configuration: ' . $e['message']);
+            throw new IniReadingException("<string>", 'Syntax error in INI configuration: ' . $e['message']);
         }
 
         // We cannot use INI_SCANNER_RAW by default because it is buggy under PHP 5.3.14 and 5.4.4
