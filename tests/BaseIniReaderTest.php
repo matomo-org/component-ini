@@ -242,4 +242,13 @@ INI;
         );
         $this->assertSame($expected, $this->reader->readString($ini));
     }
+
+    /**
+     * @expectedException \Piwik\Ini\IniReadingException
+     * @expectedExceptionMessage The file /foobar doesn't exist or is not readable
+     */
+    public function test_readFile_shouldThrow_withInvalidFile()
+    {
+        $this->reader->readFile('/foobar');
+    }
 }
