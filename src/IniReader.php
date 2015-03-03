@@ -274,7 +274,7 @@ class IniReader
         $value = $this->decodeBoolean($value, $rawValue);
         $value = $this->decodeNull($value, $rawValue);
 
-        if (is_numeric($value) && preg_match('/^[\.\+\-0-9]+$/', $value)) {
+        if (is_numeric($value) && $this->noLossWhenCastToInt($value)) {
             return $value + 0;
         }
 
@@ -298,5 +298,10 @@ class IniReader
             return null;
         }
         return $value;
+    }
+
+    private function noLossWhenCastToInt($value)
+    {
+        return (string) ($value + 0) === $value;
     }
 }

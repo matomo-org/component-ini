@@ -213,7 +213,7 @@ INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
 
-    public function test_readString_shouldPreserveStringsLookingLikeNumbers()
+    public function test_readString_shouldCastToIntOnlyIfNoDataIsLost()
     {
         $ini = <<<INI
 int = 10
@@ -224,6 +224,8 @@ look_like_hexa = 0xf4c3b00c
 look_like_binary = 0b10100111001
 with_plus = +10
 with_minus = -10
+starts_with_zero = 0123
+starts_with_zero_2 = +0123
 
 INI;
         $expected = array(
@@ -233,8 +235,10 @@ INI;
             'contains_e' => '52e666',
             'look_like_hexa' => '0xf4c3b00c',
             'look_like_binary' => '0b10100111001',
-            'with_plus' => 10,
+            'with_plus' => '+10',
             'with_minus' => -10,
+            'starts_with_zero' => '0123',
+            'starts_with_zero_2' => '+0123',
         );
         $this->assertSame($expected, $this->reader->readString($ini));
     }
