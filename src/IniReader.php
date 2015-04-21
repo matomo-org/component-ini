@@ -89,7 +89,7 @@ class IniReader
         if ($this->useNativeFunction) {
             $array = $this->readWithNativeFunction($ini);
         } else {
-            $array = $this->readWithAlternativeImplementation($ini, true);
+            $array = $this->readWithAlternativeImplementation($ini);
         }
 
         $array = $this->decode($array, $array);

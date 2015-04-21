@@ -58,3 +58,17 @@ $writer->writeToFile('config.ini', $array);
 ## License
 
 The Ini component is released under the [LGPL v3.0](http://choosealicense.com/licenses/lgpl-3.0/).
+
+## Contributing
+
+To run the unit tests:
+
+```
+vendor/bin/phpunit
+```
+
+To run the performance tests:
+
+```
+php -n vendor/bin/athletic -p tests/PerformanceTest
+```
