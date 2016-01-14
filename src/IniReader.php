@@ -46,15 +46,7 @@ class IniReader
      */
     public function readFile($filename)
     {
-        if (!file_exists($filename) || !is_readable($filename)) {
-            throw new IniReadingException(sprintf("The file %s doesn't exist or is not readable", $filename));
-        }
-
-        $ini = $this->getFileContent($filename);
-
-        if ($ini === false) {
-            throw new IniReadingException(sprintf('Impossible to read the file %s', $filename));
-        }
+        $ini = $this->getContentOfIniFile($filename);
 
         return $this->readString($ini);
     }
@@ -117,6 +109,90 @@ class IniReader
         return $array;
     }
 
+    private function getContentOfIniFile($filename)
+    {
+        if (!file_exists($filename) || !is_readable($filename)) {
+            throw new IniReadingException(sprintf("The file %s doesn't exist or is not readable", $filename));
+        }
+
+        $content = $this->getFileContent($filename);
+
+        if ($content === false) {
+            throw new IniReadingException(sprintf('Impossible to read the file %s', $filename));
+        }
+
+        return $content;
+    }
+
+    /**
+     * Reads ini comments for each key.
+     *
+     * The array returned is multidimensional, indexed by section names:
+     *
+     * ```
+     * array(
+     *     'Section 1' => array(
+     *         'key1' => 'comment 1',
+     *         'key2' => 'comment 2',
+     *     ),
+     *     'Section 2' => array(
+     *         'key3' => 'comment 3',
+     *     )
+     * );
+     * ```
+     *
+     * @param string $filename The path to a file.
+     * @throws IniReadingException
+     * @return array
+     */
+    public function readComments($filename)
+    {
+        $ini = $this->getContentOfIniFile($filename);
+        $ini = $this->splitIniContentIntoLines($ini);
+
+        $descriptions = array();
+
+        $section = '';
+        $lastComment = '';
+
+        foreach ($ini as $line) {
+            $line = trim($line);
+
+            if (strpos($line, '[') === 0) {
+                $tmp = explode(']', $line);
+                $section = trim(substr($tmp[0], 1));
+                $descriptions[$section] = array();
+                $lastComment = '';
+                continue;
+            }
+
+            if (!preg_match('/^[a-zA-Z0-9[]/', $line)) {
+                if (strpos($line, ';') === 0) {
+                    $line = trim(substr($line, 1));
+                }
+                // comment
+                $lastComment .= $line . "\n";
+                continue;
+            }
+
+            list($key, $value) = explode('=', $line, 2);
+
+            $descriptions[$section][trim($key)] = $lastComment;
+            $lastComment = '';
+        }
+
+        return $descriptions;
+    }
+
+    private function splitIniContentIntoLines($ini)
+    {
+        if (is_string($ini)) {
+            $ini = explode("\n", str_replace("\r", "\n", $ini));
+        }
+
+        return $ini;
+    }
+
     /**
      * Reimplementation in case `parse_ini_file()` is disabled.
      *
@@ -128,9 +204,8 @@ class IniReader
      */
     private function readWithAlternativeImplementation($ini)
     {
-        if (is_string($ini)) {
-            $ini = explode("\n", str_replace("\r", "\n", $ini));
-        }
+        $ini = $this->splitIniContentIntoLines($ini);
+
         if (count($ini) == 0) {
             return array();
         }
