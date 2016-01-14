@@ -54,12 +54,12 @@ get ullamcorper nunc molestie. Null
 ',
                     'testkey7' => 'Proin convallis augue sed sapien bibendum, et maximus purus rutrum.
 ',
-                    'test_key8[]' => '',
+                    'test_key8' => '',
                     'test_key9' => '',
                 ),
             'log' =>
                 array (
-                    'log_writers[]' => 'Fusce maximus bibendum lectus, nec tristique enim malesuada hendrerit.
+                    'log_writers' => 'Fusce maximus bibendum lectus, nec tristique enim malesuada hendrerit.
 ',
                     'log_level' => '
 Quisque lorem justo, sollicitudin at pellentesque interdum, euismod quis nulla.

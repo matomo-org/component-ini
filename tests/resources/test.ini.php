@@ -35,6 +35,7 @@ test_key9 = "c3.large"
 [log]
 ; Fusce maximus bibendum lectus, nec tristique enim malesuada hendrerit.
 log_writers[] = screen
+log_writers[] = file
 
 ; Quisque lorem justo, sollicitudin at pellentesque interdum, euismod quis nulla.
 ; Sed malesuada dolor in tempus ornare. Etiam lobortis commodo congue.

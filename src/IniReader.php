@@ -177,7 +177,15 @@ class IniReader
 
             list($key, $value) = explode('=', $line, 2);
 
-            $descriptions[$section][trim($key)] = $lastComment;
+            $key = trim($key);
+            if (strpos($key, '[]') === strlen($key) - 2) {
+                $key = substr($key, 0, -2);
+            }
+
+            if (empty($descriptions[$section][$key])) {
+                $descriptions[$section][$key] = $lastComment;
+            }
+
             $lastComment = '';
         }
 
