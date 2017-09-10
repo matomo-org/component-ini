@@ -5,17 +5,20 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - 7.0
+  - 7.1
   - hhvm
 
 sudo: false
+build: trusty
 
 before_script:
   - if [[ $(phpenv version-name) == '5.6' ]]; then composer require satooshi/php-coveralls:dev-master -n ; fi
   - if [[ $(phpenv version-name) != '5.6' ]]; then composer install -n ; fi
 
 script:
-  - if [[ $(phpenv version-name) == '5.6' ]]; then phpunit --coverage-clover clover.xml ; fi
-  - if [[ $(phpenv version-name) != '5.6' ]]; then phpunit ; fi
+  - if [[ $(phpenv version-name) == '5.6' ]]; then $TRAVIS_BUILD_DIR/vendor/phpunit/phpunit/phpunit --coverage-clover clover.xml ; fi
+  - if [[ $(phpenv version-name) != '5.6' ]]; then $TRAVIS_BUILD_DIR/vendor/phpunit/phpunit/phpunit ; fi
 
 after_script:
   - if [[ $(phpenv version-name) == '5.6' ]]; then php vendor/bin/coveralls -v ; fi
