@@ -20,7 +20,17 @@ class IniReader
 
     public function __construct()
     {
-        $this->useNativeFunction = function_exists('parse_ini_string');
+        $this->setUseNativeFunction();
+    }
+
+    public function setUseNativeFunction($useNativeFunction = NULL)
+    {
+        if ($useNativeFunction === NULL) {
+            $this->useNativeFunction = function_exists('parse_ini_string');
+        } else {
+            $this->useNativeFunction = $useNativeFunction;
+        }
+        
     }
 
     /**
