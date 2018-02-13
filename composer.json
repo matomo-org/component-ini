@@ -1,15 +1,15 @@
 {
-    "name": "piwik/ini",
+    "name": "matomo/ini",
     "type": "library",
     "license": "LGPL-3.0",
     "autoload": {
         "psr-4": {
-            "Piwik\\Ini\\": "src/"
+            "Matomo\\Ini\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Piwik\\Tests\\Ini\\": "tests/"
+            "Matomo\\Tests\\Ini\\": "tests/"
         }
     },
     "require": {

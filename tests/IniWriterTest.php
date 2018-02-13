@@ -1,14 +1,14 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Piwik\Tests\Ini;
+namespace Matomo\Tests\Ini;
 
-use Piwik\Ini\IniWriter;
+use Matomo\Ini\IniWriter;
 
 class IniWriterTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,7 +60,7 @@ INI;
     }
 
     /**
-     * @expectedException \Piwik\Ini\IniWritingException
+     * @expectedException \Matomo\Ini\IniWritingException
      * @expectedExceptionMessage Section "Section 1" doesn't contain an array of values
      */
     public function test_writeToString_shouldThrowException_withInvalidConfig()
