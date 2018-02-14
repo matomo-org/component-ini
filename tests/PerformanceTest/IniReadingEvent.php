@@ -1,9 +1,9 @@
 <?php
 
-namespace Piwik\Tests\Ini\PerformanceTest;
+namespace Matomo\Tests\Ini\PerformanceTest;
 
 use Athletic\AthleticEvent;
-use Piwik\Ini\IniReader;
+use Matomo\Ini\IniReader;
 
 class IniReadingEvent extends AthleticEvent
 {
