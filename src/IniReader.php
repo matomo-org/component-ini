@@ -166,6 +166,11 @@ class IniReader
                 continue;
             }
 
+            if ($line === '') {
+                $lastComment = "\n";
+                continue;
+            }
+
             if (!preg_match('/^[a-zA-Z0-9[]/', $line)) {
                 if (strpos($line, ';') === 0) {
                     $line = trim(substr($line, 1));
