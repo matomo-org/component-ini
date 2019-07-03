@@ -32,10 +32,16 @@ test_key8[] = "default1"
 test_key8[] = "default2"
 test_key9 = "c3.large"
 
+; Lorem ipsum
+; test_key10 = 1
+
 [log]
 ; Fusce maximus bibendum lectus, nec tristique enim malesuada hendrerit.
 log_writers[] = screen
 log_writers[] = file
+
+; Lorem ipsum
+; log_file = "foo.log"
 
 ; Quisque lorem justo, sollicitudin at pellentesque interdum, euismod quis nulla.
 ; Sed malesuada dolor in tempus ornare. Etiam lobortis commodo congue.
