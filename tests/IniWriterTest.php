@@ -9,8 +9,9 @@
 namespace Matomo\Tests\Ini;
 
 use Matomo\Ini\IniWriter;
+use PHPUnit\Framework\TestCase;
 
-class IniWriterTest extends \PHPUnit_Framework_TestCase
+class IniWriterTest extends TestCase
 {
     public function test_writeToString()
     {

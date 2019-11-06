@@ -13,7 +13,7 @@ namespace Matomo\Tests\Ini;
  */
 class IniReaderDisableFunctionTest extends BaseIniReaderTest
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 
