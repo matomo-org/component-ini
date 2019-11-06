@@ -9,15 +9,16 @@
 namespace Matomo\Tests\Ini;
 
 use Matomo\Ini\IniReader;
+use PHPUnit\Framework\TestCase;
 
-abstract class BaseIniReaderTest extends \PHPUnit_Framework_TestCase
+abstract class BaseIniReaderTest extends TestCase
 {
     /**
      * @var IniReader
      */
     protected $reader;
 
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 

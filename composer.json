@@ -16,7 +16,7 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0",
+        "phpunit/phpunit": "^4.8.36",
         "athletic/athletic": "0.1.*"
     }
 }
