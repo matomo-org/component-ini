@@ -92,6 +92,9 @@ class IniWriter
                     $value = array($value);
                 }
 
+                // adding comments
+                $ini .= $this->addComments($comments, $sectionName, $option);
+
                 if (is_array($value)) {
                     foreach ($value as $currentValue) {
                         $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
@@ -105,6 +108,26 @@ class IniWriter
         }
 
         return $ini;
+    }
+
+    private function addComments($comments, $sectionName, $option) {
+        $result = "";
+
+        if (isset($comments[$sectionName][$option])) {
+            $comment = explode("\n", $comments[$sectionName][$option]);
+            array_pop($comment);
+            $next = array_shift($comment);
+            while ($next !== null) {
+                if ($next === "") {
+                    $result .= "\n";
+                } else {
+                    $result .= "; " . $next . "\n";
+                }
+                $next = array_shift($comment);
+            }
+        }
+
+        return $result;
     }
 
     private function encodeValue($value)
