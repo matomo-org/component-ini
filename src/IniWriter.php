@@ -104,6 +104,8 @@ class IniWriter
                     $ini .= $option . ' = ' . $this->encodeValue($value) . "\n";
                 }
             }
+
+            $ini .= "\n";
         }
 
         return $ini;

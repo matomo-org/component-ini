@@ -54,6 +54,15 @@ INI;
         $this->assertEquals($expected, $writer->writeToString($config));
     }
 
+    public function test_writeToString2()
+    {
+        $config = include('resources/Example.php');
+        $expected = file_get_contents('tests/resources/Reference.ini');
+
+        $writer = new IniWriter();
+        $this->assertEquals($expected, $writer->writeToString($config));
+    }
+
     public function test_writeToString_withEmptyConfig()
     {
         $writer = new IniWriter();
