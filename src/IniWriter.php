@@ -93,20 +93,26 @@ class IniWriter
                 }
 
                 if (is_array($value)) {
-                    foreach ($value as $currentValue) {
-                        $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                    foreach ($value as $key => $currentValue) {
+                        if (is_int($key)) {
+                            $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                        } else {
+                            $ini .= $option . '[' . $key . '] = ' . $this->encodeValue($currentValue) . "\n";
+                        }
                     }
                 } else {
                     $ini .= $option . ' = ' . $this->encodeValue($value) . "\n";
                 }
             }
-
-            $ini .= "\n";
         }
 
         return $ini;
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     private function encodeValue($value)
     {
         if (is_bool($value)) {
