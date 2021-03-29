@@ -1,37 +1,51 @@
 <?php
 
-return [
-    'PostgreSQL' => [
+return array(
+    'PostgreSQL' => array(
         'developer' => 'Michael Stonebraker',
-        'database' => [
+        'database' => array(
             'system' => 'postgres',
-            'embedded' => '0',
+            'embedded' => 0,
             'license' => 'PostgreSQL License',
-        ],
-        'website' => [
+        ),
+        'website' => array(
             'address' => 'postgresql.org',
-        ],
-    ],
-    'MariaDB' => [
+        ),
+        'numbers' => array(
+            'float' => 0.8,
+        ),
+        'tools' => array('psql', 'pg_dump')
+    ),
+    'MariaDB' => array(
         'developer' => 'Michael Widenius',
-        'database' => [
+        'database' => array(
             'system' => 'mariadb',
-            'embedded' => '0',
+            'embedded' => 0,
             'license' => 'GPLv2',
-        ],
-        'website' => [
+        ),
+        'website' => array(
             'address' => 'mariadb.org',
-        ],
-    ],
-    'SQLite' => [
+        ),
+        'numbers' => array(
+            'float' => 1.2,
+        ),
+        'tools' => array(
+            0 => 'mysql',
+            1 => 'mysqldump'
+        )
+    ),
+    'SQLite' => array(
         'developer' => 'Dwayne Richard Hipp',
-        'database' => [
+        'database' => array(
             'system' => 'sqlite',
-            'embedded' => '1',
+            'embedded' => 1,
             'license' => 'Public domain',
-        ],
-        'website' => [
+        ),
+        'website' => array(
             'address' => 'sqlite.org',
-        ],
-    ],
-];
+        ),
+        'numbers' => array(
+            'float' => 2.4,
+        )
+    ),
+);

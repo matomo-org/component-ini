@@ -120,9 +120,11 @@ class IniWriter
         if (is_bool($value)) {
             return (int) $value;
         }
+
         if (is_string($value)) {
-            return "\"$value\"";
+            return '"' . $value . '"';
         }
+
         return $value;
     }
 }
