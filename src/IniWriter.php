@@ -97,7 +97,7 @@ class IniWriter
                         if (is_int($key)) {
                             $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
                         } else {
-                            $ini .= $option . '[' . $key . '] = ' . $this->encodeValue($currentValue) . "\n";
+                            $ini .= $option . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
                         }
                     }
                 } else {
@@ -126,5 +126,16 @@ class IniWriter
         }
 
         return $value;
+    }
+
+    /**
+     * @param $key
+     * @return string
+     */
+    private function encodeKey($key)
+    {
+        $key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);
+
+        return $key;
     }
 }

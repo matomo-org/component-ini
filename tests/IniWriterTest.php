@@ -54,10 +54,19 @@ INI;
         $this->assertEquals($expected, $writer->writeToString($config));
     }
 
-    public function test_writeToString2()
+    public function test_writeToString_multiArray()
     {
-        $config = include('resources/Example.php');
-        $expected = file_get_contents('tests/resources/Reference.ini');
+        $config = include('resources/Array.php');
+        $expected = file_get_contents('tests/resources/Array.ini');
+
+        $writer = new IniWriter();
+        $this->assertEquals($expected, $writer->writeToString($config));
+    }
+
+    public function test_writeToString_encodeKey()
+    {
+        $config = include('resources/Injection.php');
+        $expected = file_get_contents('tests/resources/Injection.ini');
 
         $writer = new IniWriter();
         $this->assertEquals($expected, $writer->writeToString($config));
