@@ -134,7 +134,7 @@ class IniWriter
      */
     private function encodeKey($key)
     {
-        $key = preg_replace('/[^A-Za-z0-9\-]/', '', $key);
+        $key = preg_replace('/[^A-Za-z0-9\-_]/', '', $key);
 
         return $key;
     }
