@@ -93,8 +93,12 @@ class IniWriter
                 }
 
                 if (is_array($value)) {
-                    foreach ($value as $currentValue) {
-                        $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                    foreach ($value as $key => $currentValue) {
+                        if (is_int($key)) {
+                            $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                        } else {
+                            $ini .= $option . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
+                        }
                     }
                 } else {
                     $ini .= $option . ' = ' . $this->encodeValue($value) . "\n";
@@ -107,14 +111,31 @@ class IniWriter
         return $ini;
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     private function encodeValue($value)
     {
         if (is_bool($value)) {
             return (int) $value;
         }
+
         if (is_string($value)) {
-            return "\"$value\"";
+            return '"' . $value . '"';
         }
+
         return $value;
+    }
+
+    /**
+     * @param $key
+     * @return string
+     */
+    private function encodeKey($key)
+    {
+        $key = preg_replace('/[^A-Za-z0-9\-_]/', '', $key);
+
+        return $key;
     }
 }
