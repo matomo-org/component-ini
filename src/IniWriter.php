@@ -84,6 +84,7 @@ class IniWriter
                 throw new IniWritingException(sprintf("Section \"%s\" doesn't contain an array of values", $sectionName));
             }
 
+            $sectionName = $this->encodeSectionName($sectionName);
             $ini .= "[$sectionName]\n";
 
             foreach ($section as $option => $value) {
@@ -95,9 +96,9 @@ class IniWriter
                 if (is_array($value)) {
                     foreach ($value as $key => $currentValue) {
                         if (is_int($key)) {
-                            $ini .= $option . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                            $ini .= $this->encodeKey($option) . '[] = ' . $this->encodeValue($currentValue) . "\n";
                         } else {
-                            $ini .= $option . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
+                            $ini .= $this->encodeKey($option) . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
                         }
                     }
                 } else {
@@ -135,6 +136,17 @@ class IniWriter
     private function encodeKey($key)
     {
         $key = preg_replace('/[^A-Za-z0-9\-_]/', '', $key);
+
+        return $key;
+    }
+
+    /**
+     * @param $key
+     * @return string
+     */
+    private function encodeSectionName($key)
+    {
+        $key = preg_replace('/[^A-Za-z0-9_ \-]/', '', $key);
 
         return $key;
     }
