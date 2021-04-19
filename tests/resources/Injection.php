@@ -10,10 +10,10 @@ return array(
             '<? []' => false
         ),
         "]\n[injected-with_] a=b\n" => [
-            'test' => "value\n[newsection]\nc=d\n",
+            'te"st' => "value\"\n[newsection]\nc=d\n",
         ],
     ),
-    "]\n[a-poison_] a=b\n" => [
-        'test' => "value\n[newsection]\nc=d\n",
+    "]\n[a-\"poison_] a=b\n" => [
+        'test' => "va\"lue\n[newsection]\nc=d\n",
     ],
 );

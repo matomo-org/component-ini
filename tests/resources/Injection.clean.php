@@ -14,6 +14,6 @@ return array(
         ],
     ),
     'a-poison_ ab' => [
-        'test' => "value\n[newsection]\nc=d\n"
+        'test' => "va\"lue\n[newsection]\nc=d\n"
     ],
 );
