@@ -9,11 +9,11 @@ return array(
             'Under_Score_' => 6.4,
             0 => 0,
         ),
-        'injected-with_ab' => [
+        'injected-with_ab' => array(
             'test' => "value\n[newsection]\nc=d\n"
-        ],
+        ),
     ),
-    'a-poison_ ab' => [
+    'a-poison_ ab' => array(
         'test' => "va\"lue\n[newsection]\nc=d\n"
-    ],
+    ),
 );
