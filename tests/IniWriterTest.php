@@ -8,6 +8,7 @@
 
 namespace Matomo\Tests\Ini;
 
+use Matomo\Ini\IniReader;
 use Matomo\Ini\IniWriter;
 use PHPUnit\Framework\TestCase;
 
@@ -63,13 +64,21 @@ INI;
         $this->assertEquals($expected, $writer->writeToString($config));
     }
 
-    public function test_writeToString_encodeKey()
+    public function test_writeToString_doesNotAllowInjection()
     {
         $config = include('resources/Injection.php');
         $expected = file_get_contents('tests/resources/Injection.ini');
 
         $writer = new IniWriter();
-        $this->assertEquals($expected, $writer->writeToString($config));
+        $actual = $writer->writeToString($config);
+        $this->assertEquals($expected, $actual);
+
+        // also test reading the output so we're sure there's no injection here
+        $reader = new IniReader();
+        $result = $reader->readString($actual);
+
+        $configClean = include('resources/Injection.clean.php');
+        $this->assertEquals($configClean, $result);
     }
 
     public function test_writeToString_withEmptyConfig()
