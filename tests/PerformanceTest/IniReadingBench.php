@@ -2,56 +2,58 @@
 
 namespace Matomo\Tests\Ini\PerformanceTest;
 
-use Athletic\AthleticEvent;
 use Matomo\Ini\IniReader;
+use PhpBench\Benchmark\Metadata\Annotations\Iterations;
 
-class IniReadingEvent extends AthleticEvent
+/**
+ * Class IniReadingBench
+ */
+class IniReadingBench
 {
+
     /**
      * @var IniReader
      */
     private $reader;
 
+    /**
+     * @var string
+     */
     private $ini;
 
-    protected function classSetUp()
-    {
-        if (extension_loaded('xdebug')) {
-            throw new \Exception('Xdebug should be disabled to run the performance tests');
-        }
-    }
-
-    protected function setUp()
-    {
-        $this->reader = new IniReader();
-        $this->createIniString();
-    }
-
     /**
-     * @iterations 10000
+     * @BeforeMethods("setUp", "createIniString")
+     * @Iterations(5)
      */
-    public function native()
+    public function benchNative()
     {
         parse_ini_string($this->ini, true);
     }
 
     /**
-     * @iterations 10000
+     * @BeforeMethods("setUp", "createIniString")
+     * @Iterations(5)
      */
-    public function native_raw()
+    public function benchNativeRaw()
     {
         parse_ini_string($this->ini, true, INI_SCANNER_RAW);
     }
 
     /**
-     * @iterations 10000
+     * @BeforeMethods("setUp", "createIniString")
+     * @Iterations(5)
      */
-    public function library()
+    public function benchLibrary()
     {
         $this->reader->readString($this->ini);
     }
 
-    private function createIniString()
+    public function setUp()
+    {
+        $this->reader = new IniReader();
+    }
+
+    public function createIniString()
     {
         $this->ini = <<<INI
 [Array]

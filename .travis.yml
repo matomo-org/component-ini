@@ -1,24 +1,13 @@
 language: php
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
   - 7.1
   - 7.2
   - 7.3
   - 7.4
 
 sudo: false
-dist: trusty
-
-matrix:
-  include:
-    - php: 5.3.3
-      dist: precise
-    - php: 8.0
-      dist: bionic
+dist: bionic
 
 before_script:
   - '[[ "$TRAVIS_PHP_VERSION" == 5.3* ]] && composer config -g -- disable-tls true || true'
