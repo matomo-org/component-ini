@@ -9,7 +9,7 @@ sudo: false
 dist: bionic
 
 before_script:
-  - composer install -n ; fi
+  - composer install -n
 
 script:
-  - $TRAVIS_BUILD_DIR/vendor/bin/phpunit ; fi
+  - $TRAVIS_BUILD_DIR/vendor/bin/phpunit
