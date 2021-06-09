@@ -252,22 +252,4 @@ INI;
     {
         $this->reader->readFile('/foobar');
     }
-
-    public function test_readBoolKeys()
-    {
-        $expected = array(
-            'form-edit'         => array(
-                'submit' => 'Submit',
-                'cancel' => 'Cancel',
-            ),
-            'form-confirmation' => array(
-                'yes' => 'Yes',
-                'no'  => 'No',
-            ),
-        );
-        $this->reader->setUseNativeFunction(false);
-        $result   = $this->reader->readFile(__DIR__ . '/resources/BoolKey.ini');
-
-        self::assertEquals($expected, $result);
-    }
 }
