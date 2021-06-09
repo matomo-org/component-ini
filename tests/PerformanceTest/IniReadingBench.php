@@ -1,6 +1,6 @@
 <?php
 
-namespace Matomo\Tests\Ini\PerformanceTest;
+namespace Matomo\Ini\Tests\PerformanceTest;
 
 use Matomo\Ini\IniReader;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;

@@ -6,12 +6,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Matomo\Tests\Ini;
+namespace Matomo\Ini\Tests;
 
 /**
  * Tests the IniReader when the `parse_ini_string()` function is disabled.
  */
-class IniReaderDisableFunctionTest extends BaseIniReaderTest
+class IniReaderDisabledFunctionTest extends BaseIniReaderTest
 {
     protected function setUp()
     {

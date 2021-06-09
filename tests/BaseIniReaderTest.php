@@ -6,7 +6,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Matomo\Tests\Ini;
+namespace Matomo\Ini\Tests;
 
 use Matomo\Ini\IniReader;
 use PHPUnit\Framework\TestCase;

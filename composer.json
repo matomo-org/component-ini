@@ -9,7 +9,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Matomo\\Tests\\Ini\\": "tests/"
+            "Matomo\\Ini\\Tests\\": "tests/"
         }
     },
     "require": {
