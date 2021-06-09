@@ -9,14 +9,14 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Matomo\\Tests\\Ini\\": "tests/"
+            "Matomo\\Ini\\Tests\\": "tests/"
         }
     },
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=7.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8.36",
-        "athletic/athletic": "0.1.*"
+        "phpunit/phpunit": "^8.5",
+        "phpbench/phpbench": "^1.0"
     }
 }
