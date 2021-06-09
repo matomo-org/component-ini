@@ -253,6 +253,16 @@ INI;
         $this->reader->readFile('/foobar');
     }
 
+    /**
+     * @expectedException \Matomo\Ini\IniReadingException
+     * @expectedExceptionMessage unexpected BOOL_TRUE
+     */
+    public function test_readBoolKeysError()
+    {
+        $this->reader->setUseNativeFunction(true);
+        $this->reader->readFile(__DIR__ . '/resources/BoolKey.ini');
+    }
+
     public function test_readBoolKeys()
     {
         $expected = array(
