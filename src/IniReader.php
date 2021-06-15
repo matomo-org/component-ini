@@ -395,4 +395,24 @@ class IniReader
     {
         return (string) ($value + 0) === $value;
     }
+
+    /**
+     * @return bool
+     */
+    public function isUseNativeFunction()
+    {
+        return $this->useNativeFunction;
+    }
+
+    /**
+     * @param bool $useNativeFunction
+     *
+     * @return IniReader
+     */
+    public function setUseNativeFunction($useNativeFunction)
+    {
+        $this->useNativeFunction = $useNativeFunction;
+
+        return $this;
+    }
 }

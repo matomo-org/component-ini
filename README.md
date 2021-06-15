@@ -43,6 +43,26 @@ $array = $reader->readString($string);
 $array = $reader->readFile('config.ini');
 ```
 
+#### Troubleshooting
+
+**unexpected BOOL_TRUE in Unknown on line X**
+
+The PHP default implementation of read_ini_file does not allow bool-ish values as keys in when reading ini files.
+
+Data like `yes = "Yes"` results in the following error:
+
+```
+Syntax error in INI configuration: syntax error, unexpected BOOL_TRUE in Unknown on line 6
+```
+
+To prevent from that error, please switch to the custom ini reader implementation by using:
+
+```php
+$reader = new IniReader();
+$reader->setUseNativeFunction(false);
+```
+
+
 ### Write
 
 ```php
