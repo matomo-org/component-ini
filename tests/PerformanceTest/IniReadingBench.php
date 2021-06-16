@@ -23,7 +23,7 @@ class IniReadingBench
 
     /**
      * @BeforeMethods("setUp", "createIniString")
-     * @Iterations(5)
+     * @Iterations(10000)
      */
     public function benchNative()
     {
@@ -32,7 +32,7 @@ class IniReadingBench
 
     /**
      * @BeforeMethods("setUp", "createIniString")
-     * @Iterations(5)
+     * @Iterations(10000)
      */
     public function benchNativeRaw()
     {
@@ -41,7 +41,7 @@ class IniReadingBench
 
     /**
      * @BeforeMethods("setUp", "createIniString")
-     * @Iterations(5)
+     * @Iterations(10000)
      */
     public function benchLibrary()
     {
