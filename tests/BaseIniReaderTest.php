@@ -9,6 +9,7 @@
 namespace Matomo\Ini\Tests;
 
 use Matomo\Ini\IniReader;
+use Matomo\Ini\IniReadingException;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseIniReaderTest extends TestCase
@@ -18,7 +19,7 @@ abstract class BaseIniReaderTest extends TestCase
      */
     protected $reader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -244,12 +245,10 @@ INI;
         $this->assertSame($expected, $this->reader->readString($ini));
     }
 
-    /**
-     * @expectedException \Matomo\Ini\IniReadingException
-     * @expectedExceptionMessage The file /foobar doesn't exist or is not readable
-     */
     public function test_readFile_shouldThrow_withInvalidFile()
     {
+        $this->expectExceptionMessage("The file /foobar doesn't exist or is not readable");
+        $this->expectException(IniReadingException::class);
         $this->reader->readFile('/foobar');
     }
 }
