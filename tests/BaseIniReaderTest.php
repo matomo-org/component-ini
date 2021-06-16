@@ -251,4 +251,32 @@ INI;
         $this->expectException(IniReadingException::class);
         $this->reader->readFile('/foobar');
     }
+
+    /**
+     * @expectedException \Matomo\Ini\IniReadingException
+     * @expectedExceptionMessage unexpected BOOL_TRUE
+     */
+    public function test_readBoolKeysError()
+    {
+        $this->reader->setUseNativeFunction(true);
+        $this->reader->readFile(__DIR__ . '/resources/BoolKey.ini');
+    }
+
+    public function test_readBoolKeys()
+    {
+        $expected = array(
+            'form-edit'         => array(
+                'submit' => 'Submit',
+                'cancel' => 'Cancel',
+            ),
+            'form-confirmation' => array(
+                'yes' => 'Yes',
+                'no'  => 'No',
+            ),
+        );
+        $this->reader->setUseNativeFunction(false);
+        $result   = $this->reader->readFile(__DIR__ . '/resources/BoolKey.ini');
+
+        self::assertEquals($expected, $result);
+    }
 }
