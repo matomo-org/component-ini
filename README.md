@@ -3,7 +3,6 @@
 Read and write INI configurations.
 
 [![Build Status](https://travis-ci.com/matomo-org/component-ini.svg?branch=master)](https://travis-ci.com/matomo-org/component-ini)
-[![Coverage Status](https://img.shields.io/coveralls/matomo-org/component-ini/master.svg?style=flat-square)](https://coveralls.io/r/matomo-org/component-ini?branch=master)
 [![Latest Version](https://img.shields.io/github/release/matomo-org/component-ini.svg?style=flat-square)](https://packagist.org/packages/matomo/component-ini)
 [![](https://img.shields.io/packagist/dm/matomo/ini.svg?style=flat-square)](https://packagist.org/packages/matomo/ini)
 
