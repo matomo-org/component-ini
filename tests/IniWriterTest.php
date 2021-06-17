@@ -6,10 +6,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Matomo\Tests\Ini;
+namespace Matomo\Ini\Tests;
 
 use Matomo\Ini\IniReader;
 use Matomo\Ini\IniWriter;
+use Matomo\Ini\IniWritingException;
 use PHPUnit\Framework\TestCase;
 
 class IniWriterTest extends TestCase
@@ -87,12 +88,10 @@ INI;
         $this->assertEquals('', $writer->writeToString(array()));
     }
 
-    /**
-     * @expectedException \Matomo\Ini\IniWritingException
-     * @expectedExceptionMessage Section "Section 1" doesn't contain an array of values
-     */
     public function test_writeToString_shouldThrowException_withInvalidConfig()
     {
+        $this->expectException(IniWritingException::class);
+        $this->expectExceptionMessage("Section \"Section 1\" doesn't contain an array of values");
         $writer = new IniWriter();
         $writer->writeToString(array('Section 1' => 123));
     }

@@ -90,5 +90,5 @@ vendor/bin/phpunit
 To run the performance tests:
 
 ```
-php -n vendor/bin/athletic -p tests/PerformanceTest
+php vendor/bin/phpbench run tests/PerformanceTest --report=default
 ```
