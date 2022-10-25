@@ -87,6 +87,10 @@ class IniWriter
             $sectionName = $this->encodeSectionName($sectionName);
             $ini .= "[$sectionName]\n";
 
+            //we don't encode certain field in config file eg: password, username
+            $excludeEncodeKey = ['password', 'username'];
+
+
             foreach ($section as $option => $value) {
                 if (is_numeric($option)) {
                     $option = $sectionName;
@@ -97,6 +101,8 @@ class IniWriter
                     foreach ($value as $key => $currentValue) {
                         if (is_int($key)) {
                             $ini .= $this->encodeKey($option) . '[] = ' . $this->encodeValue($currentValue) . "\n";
+                        } elseif (in_array($key, $excludeEncodeKey)) {
+                            $ini .= $this->encodeKey($option) . '[' . $this->encodeKey($key) . '] = ' . $currentValue . "\n";
                         } else {
                             $ini .= $this->encodeKey($option) . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
                         }
