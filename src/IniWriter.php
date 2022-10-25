@@ -107,7 +107,11 @@ class IniWriter
                             $ini .= $this->encodeKey($option) . '[' . $this->encodeKey($key) . '] = ' . $this->encodeValue($currentValue) . "\n";
                         }
                     }
-                } else {
+                } elseif (in_array($option, $excludeEncodeKey)) {
+                    $ini .= $option . ' = ' .$value . "\n";
+
+                }
+                else {
                     $ini .= $option . ' = ' . $this->encodeValue($value) . "\n";
                 }
             }

@@ -114,4 +114,26 @@ INI;
         $writer = new IniWriter();
         $this->assertEquals($expected, $writer->writeToString($config, $header));
     }
+    public function test_writeToString_shouldSkipPasswordAndUsername()
+    {
+        $header = "; <?php exit; ?> DO NOT REMOVE THIS LINE\n";
+        $config = array(
+            'Section 1' => array(
+                'username'=>"'!@#$%^&*()_+[]{}",
+                'password' => "bar'",
+            ),
+        );
+        $expected = <<<INI
+; <?php exit; ?> DO NOT REMOVE THIS LINE
+[Section 1]
+username = '!@#$%^&*()_+[]{}
+password = bar'
+
+
+INI;
+        $writer = new IniWriter();
+        $this->assertEquals($expected, $writer->writeToString($config, $header));
+    }
+
+
 }
