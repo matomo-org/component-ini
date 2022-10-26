@@ -292,6 +292,8 @@ INI;
             ['key = "test \" test"', ['key' => 'test " test']],
             ['key = "test \" \' test"', ['key' => 'test " \' test']],
             ['key = "test \" \\\' test"', ['key' => 'test " \\\' test']],
+            ['key = "\' test"', ['key' => '\' test']],
+            ['key = "test \' "', ['key' => 'test \' ']],
         ];
     }
 }
