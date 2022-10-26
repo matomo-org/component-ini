@@ -263,9 +263,9 @@ class IniReader
                     }
                 } else {
                     if ($value[0] == '"') {
-                        $value = preg_replace('/^"(.*)".*/', '$1', $value);
+                        $value = stripcslashes(preg_replace('/^"(.*)".*/', '$1', $value));
                     } elseif ($value[0] == "'") {
-                        $value = preg_replace("/^'(.*)'.*/", '$1', $value);
+                        $value = stripcslashes(preg_replace("/^'(.*)'.*/", '$1', $value));
                     } else {
                         $value = $tmp[0];
                     }

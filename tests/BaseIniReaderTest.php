@@ -277,4 +277,21 @@ INI;
 
         self::assertEquals($expected, $result);
     }
+
+    /**
+     * @dataProvider getSpecialCharsAndEscapingTests
+     */
+    public function test_readSpecialCharsAndEscaping($in, $out)
+    {
+        self::assertSame($out, $this->reader->readString($in));
+    }
+
+    public function getSpecialCharsAndEscapingTests()
+    {
+        return [
+            ['key = "test \" test"', ['key' => 'test " test']],
+            ['key = "test \" \' test"', ['key' => 'test " \' test']],
+            ['key = "test \" \\\' test"', ['key' => 'test " \\\' test']],
+        ];
+    }
 }
