@@ -25,7 +25,7 @@ class IniWriterTest extends TestCase
                 'int' => 10,
                 'float' => 10.3,
                 'array' => array(
-                    'string',
+                    'string with !"§$%&&§%/\'(%/(=',
                     10.3,
                     true,
                     false,
@@ -42,7 +42,7 @@ bool_true = 1
 bool_false = 0
 int = 10
 float = 10.3
-array[] = "string"
+array[] = "string with !\"§$%&&§%/'(%/(="
 array[] = 10.3
 array[] = 1
 array[] = 0
