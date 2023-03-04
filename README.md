@@ -8,7 +8,7 @@ Read and write INI configurations.
 
 ## Installation
 
-```json
+```bash
 composer require matomo/ini
 ```
 
