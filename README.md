@@ -18,7 +18,7 @@ PHP provides a `parse_ini_file()` function to read INI files.
 
 This component provides the following benefits over the built-in function:
 
-- allows to write INI files
+- allows one to write INI files
 - classes can be used with dependency injection and mocked in unit tests
 - throws exceptions instead of PHP errors
 - better type supports:
