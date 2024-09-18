@@ -119,7 +119,7 @@ class IniWriter
     private function encodeValue($value)
     {
         if (is_bool($value)) {
-            return $value ? 'true' : false;
+            return $value ? 'true' : 'false';
         }
 
         if (is_string($value)) {
