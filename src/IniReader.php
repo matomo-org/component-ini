@@ -341,6 +341,20 @@ class IniReader
             if (!$handle) {
                 return false;
             }
+
+            // Ensuring we have a shared lock to avoid race conditions when another process is writing to the file.
+            $flockRetries = 0;
+            while (true) {
+                if (flock($handle, LOCK_SH)) {
+                    break;
+                }
+                if ($flockRetries >= 20) {
+                    throw new Exception("Timeout after trying to get a shared lock on file $filename.");
+                }
+                usleep(100 * 1000);
+                $flockRetries++;
+            }
+
             $ini = fread($handle, filesize($filename));
             fclose($handle);
             return $ini;
