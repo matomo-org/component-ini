@@ -38,14 +38,14 @@ class IniWriterTest extends TestCase
         $expected = <<<INI
 [Section 1]
 foo = "bar"
-bool_true = 1
-bool_false = 0
+bool_true = true
+bool_false = false
 int = 10
 float = 10.3
 array[] = "string with !\"§$%&&§%/'(%/(="
 array[] = 10.3
-array[] = 1
-array[] = 0
+array[] = true
+array[] = false
 
 [Section 2]
 foo = "bar"
