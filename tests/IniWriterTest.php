@@ -82,6 +82,265 @@ INI;
         $this->assertEquals($configClean, $result);
     }
 
+    /**
+     * A value that contains newlines must round-trip to exactly the same value on both the
+     * native and the fallback reader: the embedded lines stay part of the value instead of
+     * becoming separate sections or keys.
+     */
+    public function test_writeToString_newlineInValue_roundTrips()
+    {
+        $config = array(
+            'data' => array(
+                'first' => "\n[section2]",
+                'second' => "\nkey2=value2",
+            ),
+        );
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+            $result = $reader->readString($ini);
+
+            $this->assertSame($config, $result, 'useNativeFunction=' . var_export($useNativeFunction, true));
+            $this->assertArrayNotHasKey('section2', $result);
+            $this->assertArrayNotHasKey('key2', $result);
+        }
+    }
+
+    /**
+     * @dataProvider getValuesWithQuotesBeforeLineBreak
+     */
+    public function test_writeToString_quotesBeforeLineBreak_roundTripExactly($value)
+    {
+        $config = array('section' => array('key' => $value, 'other' => 'keep'));
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+            $result = $reader->readString($ini);
+
+            $message = 'useNativeFunction=' . var_export($useNativeFunction, true);
+            $this->assertSame(array('section'), array_keys($result), $message);
+            $this->assertSame(array('key', 'other'), array_keys($result['section']), $message);
+        }
+    }
+
+    public function getValuesWithQuotesBeforeLineBreak()
+    {
+        return array(
+            'two quotes'          => array("\"\"\nkey2=value2"),
+            'two quotes, section' => array("\"\"\n[section2]"),
+            'three quotes'        => array("\"\"\"\nkey2=value2"),
+            'text and quotes'     => array("x\"\"\"\"\n[section2]"),
+            'one quote'           => array("a\"\nkey2=value2"),
+        );
+    }
+
+    /**
+     * A value ending in a backslash, followed by a multi-line value, must still round-trip
+     * exactly on both parsers: the trailing backslash must not run into the next value.
+     */
+    public function test_writeToString_valueEndingInBackslash_roundTrips()
+    {
+        $config = array(
+            'data' => array(
+                'first' => 'abc\\', // value ending in a single backslash
+                'second' => "\n[section2]\nkey2=value2",
+            ),
+        );
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+            $result = $reader->readString($ini);
+
+            $this->assertSame($config, $result, 'useNativeFunction=' . var_export($useNativeFunction, true));
+            $this->assertArrayNotHasKey('section2', $result);
+        }
+    }
+
+    /**
+     * Backslashes (e.g. Windows paths) must round-trip identically through both parsers.
+     */
+    public function test_writeToString_roundTripsBackslashes()
+    {
+        $config = array(
+            'paths' => array(
+                'windows'  => 'C:\\Users\\foo',
+                'trailing' => 'ends\\',
+                'double'   => 'a\\\\b',
+            ),
+        );
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+
+            $this->assertSame($config, $reader->readString($ini), 'useNativeFunction=' . var_export($useNativeFunction, true));
+        }
+    }
+
+    /**
+     * Values with characters that are significant to INI syntax must survive a write/read
+     * round-trip unchanged and identically on both the native and the fallback parser,
+     * without producing spurious sections or keys.
+     *
+     * @dataProvider getTrickyRoundTripValues
+     */
+    public function test_writeToString_roundTripsTrickyValues($value)
+    {
+        $config = array('section' => array('key' => $value));
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+            $result = $reader->readString($ini);
+
+            $this->assertSame($config, $result, 'useNativeFunction=' . var_export($useNativeFunction, true));
+        }
+    }
+
+    public function getTrickyRoundTripValues()
+    {
+        return array(
+            'double quote in the middle' => array('p@ss"w0rd'),
+            'semicolon in value'         => array('a;b'),
+            'lone double quote'          => array('"'),
+            'lone backslash'             => array('\\'),
+            'multiple quotes'            => array('a"b"c'),
+            'embedded newline'           => array("line1\nline2"),
+            'brackets look like section' => array('[notasection]'),
+            'equals sign in value'       => array('a=b'),
+            'newline then key=value'     => array("x\ny=z"),
+            'quote and backslash'        => array('a\\"b'),
+            'tab in value'               => array("a\tb"),
+            'tab in multi-line value'    => array("a\tb\nc\td"),
+            'windows line break'         => array("a\r\nb"),
+            'empty'                      => array(''),
+            'spaces only'                => array('   '),
+            'surrounding spaces'         => array('  a  '),
+            'two quotes'                 => array('a""b'),
+            'three quotes'               => array('a"""b'),
+            'only quotes'                => array('""'),
+            'two backslashes'            => array('a\\\\b'),
+            'three backslashes'          => array('a\\\\\\'),
+            'ends with two backslashes'  => array('a\\\\'),
+            'only backslashes'           => array('\\\\'),
+            'newline then quote'         => array("a\n\"b"),
+            'looks like a comment'       => array('; not a comment'),
+            'starts with a semicolon'    => array(';x'),
+            'looks like a section'       => array('[General]'),
+            'section on its own line'    => array("a\n[General]\nb"),
+            'several line breaks'        => array("a\n\n\nb"),
+            'equals sign and quotes'     => array('a="b"'),
+            'looks like a boolean'       => array('true'),
+            'looks like null'            => array('null'),
+            'percent signs'              => array('%s%d'),
+            'multibyte'                  => array('héllo→世界'),
+            'long'                       => array(str_repeat('x', 5000)),
+        );
+    }
+
+    /**
+     * The value written for a quote directly before a line break loses that quote, but both
+     * implementations still read the same value.
+     */
+    public function test_writeToString_quoteBeforeLineBreak_isLostButReadsTheSame()
+    {
+        $writer = new IniWriter();
+        $ini = $writer->writeToString(array('s' => array('k' => "a\"\nb")));
+
+        $expected = array('s' => array('k' => "a\nb"));
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+
+            $this->assertSame($expected, $reader->readString($ini), 'useNativeFunction=' . var_export($useNativeFunction, true));
+        }
+    }
+
+    /**
+     * Characters that are valid in an option name are kept when writing.
+     *
+     * @dataProvider getValidOptionNames
+     */
+    public function test_writeToString_keepsValidOptionNames($option)
+    {
+        $config = array('s' => array($option => 'v'));
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+
+            $this->assertSame($config, $reader->readString($ini), 'useNativeFunction=' . var_export($useNativeFunction, true));
+        }
+    }
+
+    public function getValidOptionNames()
+    {
+        return array(
+            'dot'   => array('db.host'),
+            'colon' => array('my:key'),
+            'space' => array('a b'),
+        );
+    }
+
+    public function test_writeToString_shouldThrowException_whenOptionNameCannotBeWritten()
+    {
+        $this->expectException(IniWritingException::class);
+        $this->expectExceptionMessage('cannot be written');
+
+        $writer = new IniWriter();
+        $writer->writeToString(array('s' => array('[]' => 'v')));
+    }
+
+    /**
+     * Key names are encoded as well, so a key containing line breaks cannot turn into a
+     * section or an additional key when the file is read back.
+     */
+    public function test_writeToString_encodesKeyNames()
+    {
+        $config = array(
+            'sec' => array(
+                "a\n[section2]\nkey2" => 'v',
+                'keep' => '1',
+            ),
+        );
+
+        $writer = new IniWriter();
+        $ini = $writer->writeToString($config);
+
+        $expected = array('sec' => array('asection2key2' => 'v', 'keep' => 1));
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+            $result = $reader->readString($ini);
+
+            $this->assertSame($expected, $result, 'useNativeFunction=' . var_export($useNativeFunction, true));
+            $this->assertArrayNotHasKey('section2', $result);
+        }
+    }
+
     public function test_writeToString_withEmptyConfig()
     {
         $writer = new IniWriter();
