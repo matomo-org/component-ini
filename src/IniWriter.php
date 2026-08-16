@@ -102,7 +102,13 @@ class IniWriter
                         }
                     }
                 } else {
-                    $ini .= $option . ' = ' . $this->encodeValue($value) . "\n";
+                    $encodedOption = $this->encodeOptionName($option);
+
+                    if ($encodedOption === '') {
+                        throw new IniWritingException(sprintf('Option name "%s" cannot be written', $option));
+                    }
+
+                    $ini .= $encodedOption . ' = ' . $this->encodeValue($value) . "\n";
                 }
             }
 
@@ -123,9 +129,13 @@ class IniWriter
         }
 
         if (is_string($value)) {
-            // remove any quotes w/ newlines after it since INI parsing will consider it the end of the string
-            $value = preg_replace('/\"[\n\r]/', "\n", $value);
-            $value = addcslashes($value, '"');
+            // The native parse_ini_string() cannot read an escaped quote before a line
+            // break, and a single remaining one would end up as the last character of a
+            // line, where it is no longer distinguishable from the closing quote. Keep this.
+            $value = preg_replace('/"+([\n\r])/', '$1', $value);
+            // Backslashes are escaped as well, so a value ending in one cannot leave the
+            // closing quote preceded by a lone backslash. IniReader reverses this.
+            $value = addcslashes($value, '\\"');
             return '"' . $value . '"';
         }
 
@@ -141,6 +151,20 @@ class IniWriter
         $key = preg_replace('/[^A-Za-z0-9\-_]/', '', $key);
 
         return $key;
+    }
+
+    /**
+     * Removes the characters that would change the structure of the file when they appear in
+     * an option name. Everything else is kept, so names such as "db.host" stay unchanged.
+     *
+     * @param $key
+     * @return string
+     */
+    private function encodeOptionName($key)
+    {
+        $key = preg_replace('/[\r\n\t\[\]=;#"\']/', '', $key);
+
+        return trim($key);
     }
 
     /**

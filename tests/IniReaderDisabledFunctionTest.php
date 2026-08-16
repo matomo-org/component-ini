@@ -23,6 +23,37 @@ class IniReaderDisabledFunctionTest extends BaseIniReaderTest
         $property->setValue($this->reader, false);
     }
 
+    /**
+     * Cases the fallback implementation cannot read the way the native parser does, because
+     * they depend on how the native parser itself is built. Pinned here so a change to them
+     * is noticed.
+     *
+     * @dataProvider getKnownDifferencesToNativeParser
+     */
+    public function test_readString_knownDifferencesToNativeParser($ini, $expected)
+    {
+        $this->assertSame($expected, $this->reader->readString($ini));
+    }
+
+    public function getKnownDifferencesToNativeParser()
+    {
+        return array(
+            // a lone carriage return is read as a line break, the native parser keeps it
+            'lone carriage return' => array("[s]\nk = \"a\rb\"\n", array('s' => array('k' => "a\nb"))),
+            // the native parser replaces "${...}" with an environment variable
+            'variable syntax'      => array("[s]\nk = \"a\${B}c\"\n", array('s' => array('k' => 'a${B}c'))),
+            // the native parser turns "k[sub]" into an array
+            'associative subkey'   => array("[s]\nk[sub] = \"v\"\n", array('s' => array('k[sub]' => 'v'))),
+            // the native parser returns an empty string
+            'empty value'          => array("[s]\nk =\n", array('s' => array('k' => null))),
+        );
+    }
+
+    public function test_readString_apostropheInUnquotedValue_isKept()
+    {
+        $this->assertSame(array('sec' => array('k' => "don't")), $this->reader->readString("[sec]\nk = don't\n"));
+    }
+
     public function test_readComments()
     {
         $descriptions = $this->reader->readComments(__DIR__ . '/resources/test.ini.php');
