@@ -9,6 +9,7 @@
 namespace Matomo\Ini\Tests;
 
 use Matomo\Ini\IniReader;
+use Matomo\Ini\IniReadingException;
 use Matomo\Ini\IniWriter;
 use Matomo\Ini\IniWritingException;
 use PHPUnit\Framework\TestCase;
@@ -310,7 +311,7 @@ INI;
         $this->expectExceptionMessage('cannot be written');
 
         $writer = new IniWriter();
-        $writer->writeToString(array('s' => array('[]' => 'v')));
+        $writer->writeToString(array('s' => array('===' => 'v')));
     }
 
     /**
@@ -321,7 +322,7 @@ INI;
     {
         $config = array(
             'sec' => array(
-                "a\n[section2]\nkey2" => 'v',
+                "a\nkey2" => 'v',
                 'keep' => '1',
             ),
         );
@@ -329,16 +330,63 @@ INI;
         $writer = new IniWriter();
         $ini = $writer->writeToString($config);
 
-        $expected = array('sec' => array('asection2key2' => 'v', 'keep' => 1));
+        $expected = array('sec' => array('akey2' => 'v', 'keep' => 1));
 
         foreach (array(true, false) as $useNativeFunction) {
             $reader = new IniReader();
             $reader->setUseNativeFunction($useNativeFunction);
-            $result = $reader->readString($ini);
 
-            $this->assertSame($expected, $result, 'useNativeFunction=' . var_export($useNativeFunction, true));
-            $this->assertArrayNotHasKey('section2', $result);
+            $this->assertSame($expected, $reader->readString($ini), 'useNativeFunction=' . var_export($useNativeFunction, true));
         }
+    }
+
+    /**
+     * A key name cannot start a section of its own, whichever characters it contains.
+     *
+     * @dataProvider getKeyNamesThatLookLikeSections
+     */
+    public function test_writeToString_keyNameDoesNotStartASection($key)
+    {
+        $writer = new IniWriter();
+        $ini = $writer->writeToString(array('sec' => array($key => 'v', 'keep' => '1')));
+
+        foreach (array(true, false) as $useNativeFunction) {
+            $reader = new IniReader();
+            $reader->setUseNativeFunction($useNativeFunction);
+
+            try {
+                $result = $reader->readString($ini);
+            } catch (IniReadingException $e) {
+                // the file is rejected, so no section is read from it
+                $result = array();
+            }
+
+            $this->assertSame(array_diff(array_keys($result), array('sec')), array(), 'useNativeFunction=' . var_export($useNativeFunction, true));
+        }
+    }
+
+    public function getKeyNamesThatLookLikeSections()
+    {
+        return array(
+            'line break and section' => array("a\n[section2]\nkey2"),
+            'section name'           => array('[section2]'),
+            'closing bracket first'  => array(']x'),
+        );
+    }
+
+    /**
+     * A key ending in "[]" denotes an array and has to keep its brackets.
+     */
+    public function test_writeToString_keepsArrayBracketsInKeyName()
+    {
+        $writer = new IniWriter();
+        $ini = $writer->writeToString(array('sec' => array('d[]' => 'e')));
+
+        $this->assertSame("[sec]\nd[] = \"e\"\n\n", $ini);
+
+        $reader = new IniReader();
+        $reader->setUseNativeFunction(true);
+        $this->assertSame(array('sec' => array('d' => array('e'))), $reader->readString($ini));
     }
 
     public function test_writeToString_withEmptyConfig()
