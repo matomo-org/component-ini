@@ -7,7 +7,7 @@ return array(
             'array0123' => 'test',
             'Test-Test-' => 4.8,
             'Under_Score_' => 6.4,
-            0 => 0,
+            0 => false,
         ),
         'injected-with_ab' => array(
             'test' => "value\n[newsection]\nc=d\n"
