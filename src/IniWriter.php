@@ -155,14 +155,15 @@ class IniWriter
 
     /**
      * Removes the characters that would change the structure of the file when they appear in
-     * an option name. Everything else is kept, so names such as "db.host" stay unchanged.
+     * an option name. Brackets are kept, as they denote an array. Everything else is kept as
+     * well, so names such as "db.host" stay unchanged.
      *
      * @param $key
      * @return string
      */
     private function encodeOptionName($key)
     {
-        $key = preg_replace('/[\r\n\t\[\]=;#"\']/', '', $key);
+        $key = preg_replace('/[\r\n\t=;#"\']/', '', $key);
 
         return trim($key);
     }
